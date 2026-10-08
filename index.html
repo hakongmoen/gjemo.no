@@ -191,8 +191,10 @@ html.no [lang="no"]{display:revert}
   var done=false, raf=0, stage=null, skip=null;
   function finish(){
     if(done) return; done=true; cancelAnimationFrame(raf);
-    if(stage) stage.remove(); if(skip) skip.remove();
+    // Show the real logo first, then remove the intro layer on the next frame: no blank or doubled frame.
     hero.classList.remove('intro-on'); hero.classList.add('intro-done');
+    if(skip) skip.remove();
+    var st=stage; if(st) requestAnimationFrame(function(){ requestAnimationFrame(function(){ st.remove(); }); });
     removeEventListener('pointerdown',finish); removeEventListener('keydown',finish);
   }
   addEventListener('pointerdown',finish); addEventListener('keydown',finish);
@@ -222,7 +224,12 @@ html.no [lang="no"]{display:revert}
     var svg=stage.querySelector('svg'), P=svg.querySelectorAll('path')[0], Q=svg.querySelectorAll('path')[1], c=svg.querySelectorAll('circle');
     svg.setAttribute('width',kT.w); svg.setAttribute('height',kT.h); svg.style.left=kT.x+'px'; svg.style.top=kT.y+'px'; svg.style.transformOrigin='50% 50%';
     var LP=P.getTotalLength(), LQ=Q.getTotalLength();
-    var place=function(el,x,y,o,blur,sc){el.style.transform='translate('+x.toFixed(2)+'px,'+y.toFixed(2)+'px)'+(sc?' scale('+sc+')':'');el.style.opacity=o;el.style.filter=blur>.05?'blur('+blur.toFixed(2)+'px)':'none'};
+    var place=function(el,x,y,o,blur,sc){el.style.transform='translate('+(x+ox).toFixed(2)+'px,'+(y+oy).toFixed(2)+'px)'+(sc?' scale('+sc+')':'');el.style.opacity=o;el.style.filter=blur>.05?'blur('+blur.toFixed(2)+'px)':'none'};
+    // Calibrate: put the intro text where the real «GJE» is and measure the difference, so the intro
+    // ends pixel-exact on the real logo (the glyph box of a positioned span differs from inline text).
+    var ox=0, oy=0;
+    place(G, gT.x, gT.y, 0, 0); var gr=rel(G); ox=gT.x-gr.x; oy=gT.y-gr.y;
+    var sr=rel(svg); if(Math.abs(sr.y-kT.y)>.3||Math.abs(sr.x-kT.x)>.3){ svg.style.left=(kT.x+(kT.x-sr.x))+'px'; svg.style.top=(kT.y+(kT.y-sr.y))+'px'; }
     if(long){
       var wG=G.getBoundingClientRect().width, wN=N.getBoundingClientRect().width, wM=M.getBoundingClientRect().width, wE=E.getBoundingClientRect().width;
       var cx=L.x+L.w/2, cy=gT.y, dy=fs*62/84, Xs=cx-Math.max(wG+wN,wM+wE)/2;
@@ -252,7 +259,7 @@ html.no [lang="no"]{display:revert}
       var p1=P.getPointAtLength(LP*dr), p2=Q.getPointAtLength(LQ*dr);
       c[0].setAttribute('cx',p1.x); c[0].setAttribute('cy',p1.y); c[0].style.opacity=on*fadePen;
       c[1].setAttribute('cx',p2.x); c[1].setAttribute('cy',p2.y); c[1].style.opacity=on*fadePen;
-      svg.style.transform='scale('+(0.97+0.03*dr)+')';
+      svg.style.transform=dr>=1?'none':'scale('+(0.97+0.03*dr)+')';
       if(t>=end-.5 && !hero.classList.contains('intro-tag')) hero.classList.add('intro-tag'); // start the tagline before the pens finish
       if(t>=end){ finish(); return; }
       raf=requestAnimationFrame(frame);
