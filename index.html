@@ -84,6 +84,8 @@ h2::after{content:"";flex:1;height:1px;background:var(--line)}
 .world-snooker a{color:#F6E6B4;border-bottom:1px solid rgba(201,164,92,.6);padding:10px 0}
 .world-snooker a:focus-visible{outline-color:#C9A45C}
 .world-snooker .soon{color:#B5AE9E}
+.world-snooker a.icon-link{flex:none;border:0;padding:0;border-radius:22.4%;transition:transform .2s ease}
+.world-snooker a.icon-link:hover{transform:translateY(-2px) scale(1.03)}
 .next{border:1px dashed #C6C9D3;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:220px;color:var(--muted);text-align:center;padding:30px}
 .next b{font-weight:500;font-size:20px;color:var(--text)}
 
@@ -142,7 +144,7 @@ html.no [lang="no"]{display:revert}
 <div class="games">
 <article class="world-snooker">
 <div class="head">
-<img src="snooker-duels-ikon.svg" width="96" height="96" alt="Snooker Duels app icon">
+<a class="icon-link" href="https://snookerduels.com" aria-label="Snooker Duels – snookerduels.com"><img src="snooker-duels-ikon.svg" width="96" height="96" alt="Snooker Duels app icon"></a>
 <div>
 <h3>Snooker Duels</h3>
 <p class="slogan">Duel your way to the top</p>
