@@ -47,7 +47,7 @@ a:focus-visible{outline:2px solid var(--violet);outline-offset:3px;border-radius
 /* One continuous gradient over the whole word (as in the intro), not one per span */
 .lockup .word{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 .lockup .word span{color:transparent}
-.intro{transition:opacity .35s ease}
+.intro-keep .lockup{opacity:0}
 .mark{display:block;width:clamp(100px,19vw,200px);height:auto;overflow:visible}
 .tagline{margin:0;font-size:clamp(22px,3vw,30px);color:var(--text)}
 .sub{margin:0;font-size:17px;color:var(--muted);letter-spacing:.06em}
@@ -198,13 +198,19 @@ html.no [lang="no"]{display:revert}
   lock.style.cursor='pointer'; lock.addEventListener('click',function(){ if(hero.classList.contains('intro-done')){ try{localStorage.removeItem('gjemo-intro')}catch(e){} location.reload(); } });
   hero.classList.add('intro-on');
   var done=false, raf=0, stage=null, skip=null;
-  function finish(){
+  function finish(ev){
     if(done) return; done=true; cancelAnimationFrame(raf);
+    var early=!!ev; // skipped by tap or key (or the font safety timer) instead of reaching the end
     // Show the real logo first, then remove the intro layer on the next frame: no blank or doubled frame.
     hero.classList.remove('intro-on'); hero.classList.add('intro-done');
     if(skip) skip.remove();
-    // Cross-fade: the intro layer fades out over the real logo (0.35 s), so no colour or pixel jump shows.
-    var st=stage; if(st){ requestAnimationFrame(function(){ st.style.opacity='0'; setTimeout(function(){ st.remove(); },400); }); }
+    // No swap at the end (Håkon 8 Oct: the hand-over still showed). The drawn logo simply stays where it
+    // ended; the real lockup stays invisible underneath (still clickable and read by screen readers).
+    // Only if the window is resized, or the intro was skipped early, the real logo takes over.
+    var st=stage;
+    if(st && !early){ hero.classList.add('intro-keep');
+      addEventListener('resize',function(){ hero.classList.remove('intro-keep'); if(st.parentNode) st.remove(); },{once:true}); }
+    else if(st){ st.remove(); }
     removeEventListener('pointerdown',finish); removeEventListener('keydown',finish);
   }
   addEventListener('pointerdown',finish); addEventListener('keydown',finish);
