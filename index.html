@@ -187,7 +187,10 @@ html.no [lang="no"]{display:revert}
    prefers-reduced-motion or no fonts API shows the finished logo directly. No sound, no external files. */
 (function(){
   var hero=document.querySelector('.hero'), lock=hero.querySelector('.lockup');
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches||!document.fonts||!window.requestAnimationFrame) return;
+  // The intro is short, calm and has no flashing, so it plays also with «reduce motion» (Håkon 8 Oct).
+  if(!document.fonts||!window.requestAnimationFrame) return;
+  // Tap the logo afterwards to watch the intro again.
+  lock.style.cursor='pointer'; lock.addEventListener('click',function(){ if(hero.classList.contains('intro-done')){ try{localStorage.removeItem('gjemo-intro')}catch(e){} location.reload(); } });
   hero.classList.add('intro-on');
   var done=false, raf=0, stage=null, skip=null;
   function finish(){
