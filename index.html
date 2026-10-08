@@ -3,87 +3,253 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Gjemo - Independent games from Norway</title>
-<meta name="description" content="Gjemo AS is a small independent games studio from Norway. We make Snooker Duels: real craft, no ads and no tracking.">
-<meta name="theme-color" content="#0A0B09">
-<link rel="canonical" href="https://gjemo.no/">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Gjemo">
-<meta property="og:title" content="Gjemo - Independent games from Norway">
-<meta property="og:description" content="A small independent games studio from Norway. Makers of Snooker Duels.">
-<meta property="og:url" content="https://gjemo.no/">
+<title>Gjemo - Independent game studio from Norway</title>
+<meta name="description" content="Gjemo AS is a small independent game studio from Norway.">
+<meta name="theme-color" content="#EFF0F2">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="preload" href="fonts/playfair-display-italic-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="style.css">
 <style>
-.hero.studio{padding:110px 32px 100px}
-.game{display:flex;gap:28px;align-items:flex-start}
-.game img{flex:none;width:128px;height:128px;border-radius:22.4%;filter:drop-shadow(0 14px 24px rgba(0,0,0,.6))}
-.game h3{margin-top:0}
-.facts p{font-size:18px}
-@media (max-width:600px){.game{flex-direction:column;gap:18px}.game img{width:104px;height:104px}}
+/* Fonts are self-hosted (see fonts/OFL.txt): no request leaves gjemo.no. */
+@font-face{font-family:'Outfit';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/outfit-500.woff2) format('woff2')}
+@font-face{font-family:'Playfair Display';font-style:italic;font-weight:400;font-display:swap;src:url(fonts/playfair-display-italic-400.woff2) format('woff2')}
+@font-face{font-family:'Barlow Condensed';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/barlow-condensed-500.woff2) format('woff2')}
+
+/* Gjemo identity: light, royal blue to violet */
+:root{color-scheme:light;--bg:#EFF0F2;--card:#F8F8FA;--text:#1E2233;--muted:#555B6E;--line:#D9DBE2;--blue:#3B5BDB;--violet:#7C3AED;--link:#4F3BD0;--grad:linear-gradient(45deg,#3B5BDB,#7C3AED)}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Outfit',system-ui,sans-serif;font-weight:500;font-size:18px;line-height:1.6;position:relative}
+.tex{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+body>*:not(.tex){position:relative;z-index:1}
+a{color:var(--link);text-decoration:none;border-bottom:1px solid rgba(79,59,208,.35)}
+a:hover{border-bottom-color:var(--link)}
+a:focus-visible{outline:2px solid var(--violet);outline-offset:3px;border-radius:2px}
+.sprite{position:absolute;width:0;height:0;overflow:hidden}
+.wrap{max-width:1040px;margin:0 auto;padding:0 32px}
+
+/* Top bar */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 0}
+.brand{display:flex;align-items:center;gap:10px;border:0}
+.brand svg{display:block}
+.word{font-family:'Outfit',sans-serif;font-weight:500;letter-spacing:.2em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand .word{font-size:17px}
+.nav{display:flex;align-items:center;gap:26px;font-size:14px;letter-spacing:.14em;text-transform:uppercase}
+.nav a{color:var(--muted);border:0;padding:12px 4px;margin:-12px -4px}
+.nav a:hover{color:var(--violet)}
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.lang button{font:inherit;font-size:13px;letter-spacing:.12em;background:none;border:0;color:var(--muted);padding:12px 14px;min-width:44px;min-height:44px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--grad);color:#fff}
+
+/* Hero. The finished lockup is plain markup (also the fallback). The intro script
+   plays GJEndem / MOen -> GJE + MO -> the mark drawn by two fountain pens, then shows it. */
+.hero{position:relative;padding:150px 0 120px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:26px}
+.lockup{display:flex;align-items:center;gap:clamp(18px,3vw,34px);margin:0;font-weight:500}
+.lockup .word{font-size:clamp(44px,8.4vw,88px);line-height:1;letter-spacing:.2em;margin-right:-.2em;white-space:nowrap}
+.lockup .word span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mark{display:block;width:clamp(100px,19vw,200px);height:auto;overflow:visible}
+.tagline{margin:0;font-size:clamp(22px,3vw,30px);color:var(--text)}
+.sub{margin:0;font-size:17px;color:var(--muted);letter-spacing:.06em}
+.intro-on .lockup{visibility:hidden}
+.intro-on .tagline,.intro-on .sub{opacity:0}
+.intro-done .tagline,.intro-done .sub{animation:rise .8s ease both}
+.intro-done .sub{animation-delay:.15s}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.intro{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.intro .w{position:absolute;left:0;top:0;line-height:1;letter-spacing:.2em;white-space:nowrap;will-change:transform,opacity,filter;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0}
+.intro svg{position:absolute;overflow:visible}
+.skip{position:absolute;right:0;top:12px;font:inherit;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);background:none;border:0;min-height:44px;padding:0 10px;cursor:pointer;opacity:.8}
+
+/* Sections */
+section{padding:56px 0}
+h2{margin:0 0 22px;font-size:14px;font-weight:500;letter-spacing:.32em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:14px}
+h2::after{content:"";flex:1;height:1px;background:var(--line)}
+.games{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(440px,100%),1fr));gap:24px}
+
+/* Each game is its own world: Snooker Duels keeps its dark, gold and cloth green */
+.world-snooker{position:relative;overflow:hidden;border-radius:20px;color:#F2EEE3;background:radial-gradient(ellipse 90% 70% at 50% -10%,#2A2B25 0%,#0E0F0C 55%,#0A0B09 100%);box-shadow:inset 0 0 0 1px rgba(201,164,92,.55),0 22px 44px rgba(20,22,40,.22);padding:34px 32px 30px;display:flex;flex-direction:column;gap:18px;font-family:'Barlow Condensed',system-ui,sans-serif}
+.world-snooker::before{content:"";position:absolute;left:0;right:0;bottom:0;height:46%;background:radial-gradient(ellipse 70% 90% at 50% 100%,#23704A 0%,#175A33 45%,rgba(13,58,31,0) 100%);opacity:.55;pointer-events:none}
+.world-snooker>*{position:relative}
+.world-snooker .head{display:flex;gap:22px;align-items:center}
+.world-snooker img{flex:none;width:96px;height:96px;border-radius:22.4%;filter:drop-shadow(0 12px 20px rgba(0,0,0,.6))}
+.world-snooker h3{margin:0;font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:36px;line-height:1.1;background:linear-gradient(100deg,#A57E3A 0%,#D4B06A 35%,#FFF6DA 50%,#D4B06A 65%,#A57E3A 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.world-snooker .slogan{margin:4px 0 0;font-size:14px;letter-spacing:.32em;text-transform:uppercase;color:#C9A45C}
+.world-snooker p{margin:0;font-size:19px;line-height:1.5}
+.world-snooker .links{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center;font-size:15px;letter-spacing:.2em;text-transform:uppercase}
+.world-snooker a{color:#F6E6B4;border-bottom:1px solid rgba(201,164,92,.6);padding:10px 0}
+.world-snooker a:focus-visible{outline-color:#C9A45C}
+.world-snooker .soon{color:#B5AE9E}
+.next{border:1px dashed #C6C9D3;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:220px;color:var(--muted);text-align:center;padding:30px}
+.next b{font-weight:500;font-size:20px;color:var(--text)}
+
+.about p,.contact p{margin:0 0 14px;max-width:680px}
+.about .lead{font-size:24px;line-height:1.45}
+.about .name{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.contact .mail{font-size:clamp(26px,4vw,36px)}
+.contact .mail a{border:0;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.privacy p{max-width:760px;color:var(--muted);font-size:16px;margin:0}
+
+footer{border-top:1px solid var(--line);margin-top:30px;padding:30px 0 44px;color:var(--muted);font-size:15px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:14px 30px;align-items:center;justify-content:space-between}
+footer .brand .word{font-size:15px}
+
+/* Language: English by default, Norwegian on request */
+[lang="no"]{display:none}
+html.no [lang="en"]:not(html){display:none}
+html.no [lang="no"]{display:revert}
+
+@media(max-width:640px){
+  .wrap{padding:0 16px}
+  .nav .sec{display:none}
+  .hero{padding:64px 0 80px}
+  .lockup{gap:18px}
+  .world-snooker{padding:26px 20px}
+  .world-snooker .head{flex-direction:column;align-items:flex-start}
+}
 </style>
 </head>
 <body>
-<svg class="sprite" aria-hidden="true" focusable="false"><symbol id="gjmark" viewBox="26 30 256 180"><defs><linearGradient id="gjg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#3B5BDB"/><stop offset="1" stop-color="#7C3AED"/></linearGradient></defs><path fill="none" stroke="url(#gjg)" stroke-width="28" stroke-linecap="round" stroke-linejoin="round" d="M160 120 L118 120 M160 120 L160 176 A72 72 0 1 1 160 64 L212 140 L264 52 L264 192"/></symbol><symbol id="gjmark-l" viewBox="26 30 256 180"><defs><linearGradient id="gjgl" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#7B93F0"/><stop offset="1" stop-color="#A78BFA"/></linearGradient></defs><path fill="none" stroke="url(#gjgl)" stroke-width="28" stroke-linecap="round" stroke-linejoin="round" d="M160 120 L118 120 M160 120 L160 176 A72 72 0 1 1 160 64 L212 140 L264 52 L264 192"/></symbol><filter id="gjfelt"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" seed="3"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.18"/></feComponentTransfer></filter></svg>
-<div class="topbar">
-<svg class="tex" aria-hidden="true" focusable="false"><rect width="100%" height="100%" filter="url(#gjfelt)"/></svg>
-<header class="topbar-in">
-<a class="brand" href="./" aria-label="Gjemo"><svg width="50" height="35" aria-hidden="true"><use href="#gjmark"/></svg><span>GJEMO</span></a>
-<nav class="nav" aria-label="Main"><a href="#game">Snooker Duels</a><a href="#contact">Contact</a><a href="#company">Company</a></nav>
+<svg class="tex" aria-hidden="true" focusable="false"><filter id="felt"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" seed="3"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.18"/></feComponentTransfer></filter><rect width="100%" height="100%" filter="url(#felt)"/></svg>
+<svg class="sprite" aria-hidden="true" focusable="false"><defs><linearGradient id="gjg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#3B5BDB"/><stop offset="1" stop-color="#7C3AED"/></linearGradient></defs><symbol id="gjmark" viewBox="26 30 256 180"><path fill="none" stroke="url(#gjg)" stroke-width="28" stroke-linecap="round" stroke-linejoin="round" d="M160 120 L118 120 M160 120 L160 176 A72 72 0 1 1 160 64 L212 140 L264 52 L264 192"/></symbol></svg>
+
+<header class="wrap bar">
+<a class="brand" href="./" aria-label="Gjemo"><svg width="40" height="28" aria-hidden="true"><use href="#gjmark"/></svg><span class="word">GJEMO</span></a>
+<nav class="nav" aria-label="Main">
+<a class="sec" href="#games"><span lang="en">Games</span><span lang="no">Spill</span></a>
+<a class="sec" href="#about"><span lang="en">About</span><span lang="no">Om</span></a>
+<a class="sec" href="#contact"><span lang="en">Contact</span><span lang="no">Kontakt</span></a>
+<div class="lang" role="group" aria-label="Language"><button type="button" data-l="en" aria-pressed="true">EN</button><button type="button" data-l="no" aria-pressed="false">NO</button></div>
+</nav>
 </header>
-</div>
 
 <main>
-<section class="hero studio">
-<div class="hero-glow"></div>
-<h1 class="logo rise">Gjemo</h1>
-<div class="by"><i></i><span>INDEPENDENT GAMES</span><i></i></div>
-<p class="tag rise d3">A small independent games studio from Norway.</p>
-<p class="sub rise d5">We make games that respect the player: real craft, no ads and no tracking.</p>
-</section>
+<div class="wrap hero">
+<h1 class="lockup" aria-label="Gjemo">
+<svg class="mark" viewBox="26 30 256 180" aria-hidden="true"><use href="#gjmark"/></svg>
+<span class="word" aria-hidden="true"><span class="gje">GJE</span><span class="mo">MO</span></span>
+</h1>
+<p class="tagline"><span lang="en">We make games.</span><span lang="no">Vi lager spill.</span></p>
+<p class="sub"><span lang="en">Independent game studio from Norway</span><span lang="no">Uavhengig spillstudio fra Norge</span></p>
+</div>
 
-<div class="page">
-<h2 id="game">Our game</h2>
-<div class="game">
-<img src="logo-snooker-duels-320.png" width="128" height="128" alt="Snooker Duels logo">
+<section id="games" class="wrap">
+<h2><span lang="en">Games</span><span lang="no">Spill</span></h2>
+<div class="games">
+<article class="world-snooker">
+<div class="head">
+<img src="snooker-duels-ikon.svg" width="96" height="96" alt="Snooker Duels app icon">
 <div>
 <h3>Snooker Duels</h3>
-<p>Snooker, as it's meant to be. Full professional rules, eight computer opponents with minds of their own, and TV-style presentation. Free, with no ads. Ever.</p>
-<p><a href="https://snookerduels.com">snookerduels.com</a></p>
-<p class="muted">Coming soon to iPhone.</p>
+<p class="slogan">Duel your way to the top</p>
 </div>
 </div>
+<p lang="en">Snooker, as it's meant to be: full professional rules, computer opponents with minds of their own, and TV-style presentation. Free, with no ads. Ever.</p>
+<p lang="no">Snooker slik det skal være: fulle proffregler, datamotstandere med egen vilje og TV-preg. Gratis, uten reklame. Aldri.</p>
+<div class="links"><a href="https://snookerduels.com">snookerduels.com</a><span class="soon"><span lang="en">Coming soon to iPhone</span><span lang="no">Kommer snart til iPhone</span></span></div>
+</article>
+<div class="next" aria-hidden="true"><b><span lang="en">Next game</span><span lang="no">Neste spill</span></b><span lang="en">In the workshop.</span><span lang="no">På verkstedet.</span></div>
+</div>
+</section>
 
-<h2 id="contact">Contact</h2>
-<div class="panel">
-<p class="eyebrow">General</p>
-<p class="big"><a href="mailto:hello@gjemo.no">hello@gjemo.no</a></p>
-</div>
-<div class="panel">
-<p class="eyebrow">Support for our games</p>
-<p class="big"><a href="mailto:support@gjemo.no">support@gjemo.no</a></p>
-</div>
-<p class="muted">We reply in English or Norwegian.</p>
+<section id="about" class="wrap about">
+<h2><span lang="en">About</span><span lang="no">Om</span></h2>
+<p class="lead" lang="en"><span class="name">Gjemo</span> stands for <b>GJE</b>ndem <b>MO</b>en. We are a small Norwegian studio run by Håkon Gjendem Moen (CEO).</p>
+<p class="lead" lang="no"><span class="name">Gjemo</span> står for <b>GJE</b>ndem <b>MO</b>en. Vi er et lite norsk studio drevet av Håkon Gjendem Moen (daglig leder).</p>
+<p lang="en">We make games that respect the player: real craft, no ads and no tracking.</p>
+<p lang="no">Vi lager spill som respekterer spilleren: ekte håndverk, ingen reklame og ingen sporing.</p>
+</section>
 
-<h2 id="company">Company</h2>
-<div class="facts">
-<p><strong>Gjemo AS</strong><br>
-Bekkelivegen 21, 2315 Hamar, Norway · <a href="mailto:support@gjemo.no">support@gjemo.no</a><br>
-Org. no. 935 650 615, registered in the Register of Business Enterprises (Foretaksregisteret, Brønnøysundregistrene)</p>
-</div>
+<section id="contact" class="wrap contact">
+<h2><span lang="en">Contact</span><span lang="no">Kontakt</span></h2>
+<p class="mail"><a href="mailto:hello@gjemo.no">hello@gjemo.no</a></p>
+<p lang="en">We reply in English or Norwegian.</p>
+<p lang="no">Vi svarer på norsk eller engelsk.</p>
+</section>
 
-<h2>This website</h2>
-<p>This site uses no cookies, no analytics and no external scripts, and its fonts are hosted on the site itself. It is hosted by GitHub Pages, which may process technical data such as your IP address when you visit (see <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub's privacy statement</a>). We do not receive or use that data. For the game, see the <a href="https://snookerduels.com/privacy">Snooker Duels privacy policy</a>.</p>
-</div>
+<section id="privacy" class="wrap privacy">
+<h2><span lang="en">Privacy</span><span lang="no">Personvern</span></h2>
+<p lang="en">This site uses no cookies, no analytics and no external scripts, and its fonts are hosted on the site itself. It is hosted by GitHub Pages, which may process technical data such as your IP address when you visit (see <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub's privacy statement</a>). We do not receive or use that data. For the game, see the <a href="https://snookerduels.com/privacy">Snooker Duels privacy policy</a>.</p>
+<p lang="no">Siden bruker ingen informasjonskapsler, ingen analyse og ingen eksterne skript, og fontene ligger på siden selv. Den driftes av GitHub Pages, som kan behandle tekniske data som IP-adressen din når du besøker den (se <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHubs personvernerklæring</a>). Vi mottar eller bruker ikke disse dataene. For spillet, se <a href="https://snookerduels.com/privacy">personvernerklæringen for Snooker Duels</a>.</p>
+</section>
 </main>
 
-<div class="botbar">
-<footer class="botbar-in">
-<a class="brand" href="./" aria-label="Gjemo"><svg width="50" height="35" aria-hidden="true"><use href="#gjmark-l"/></svg><span>GJEMO</span></a>
-<nav class="nav" aria-label="Footer"><a href="https://snookerduels.com">Snooker Duels</a><a href="mailto:hello@gjemo.no">Contact</a></nav>
-<small>&copy; 2026 Gjemo AS</small>
-</footer>
+<footer>
+<div class="wrap">
+<a class="brand" href="./" aria-label="Gjemo"><svg width="34" height="24" aria-hidden="true"><use href="#gjmark"/></svg><span class="word">GJEMO</span></a>
+<span>Gjemo AS · <span lang="en">Org. no.</span><span lang="no">Org.nr.</span> 935 650 615 · <a href="mailto:hello@gjemo.no">hello@gjemo.no</a> · <a href="company.html"><span lang="en">Company info</span><span lang="no">Selskapsinfo</span></a></span>
+<span><a href="#privacy"><span lang="en">Privacy</span><span lang="no">Personvern</span></a> · &copy; 2026 Gjemo AS</span>
 </div>
+</footer>
+
+<script>
+/* GJEMO intro, after C:\Gjemo\logo\endelig\intro-forhand.html (#v=6&c=4). Plays once, tap or key skips,
+   prefers-reduced-motion or no fonts API shows the finished logo directly. No sound, no external files. */
+(function(){
+  var hero=document.querySelector('.hero'), lock=hero.querySelector('.lockup');
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches||!document.fonts||!window.requestAnimationFrame) return;
+  hero.classList.add('intro-on');
+  var done=false, raf=0, stage=null, skip=null;
+  function finish(){
+    if(done) return; done=true; cancelAnimationFrame(raf);
+    if(stage) stage.remove(); if(skip) skip.remove();
+    hero.classList.remove('intro-on'); hero.classList.add('intro-done');
+    removeEventListener('pointerdown',finish); removeEventListener('keydown',finish);
+  }
+  addEventListener('pointerdown',finish); addEventListener('keydown',finish);
+  var safety=setTimeout(finish,2500); // fonts never ready: show the finished logo
+  document.fonts.ready.then(function(){ clearTimeout(safety); if(!done) start(); });
+
+  function start(){
+    var ease=function(x){return x<0?0:x>1?1:(x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2)};
+    var k=function(t,a,b){return ease((t-a)/(b-a))}, lin=function(x){return x<0?0:x>1?1:x};
+    var H=hero.getBoundingClientRect();
+    var rel=function(el){var b=el.getBoundingClientRect();return{x:b.left-H.left,y:b.top-H.top,w:b.width,h:b.height}};
+    var word=lock.querySelector('.word'), gT=rel(lock.querySelector('.gje')), mT=rel(lock.querySelector('.mo')), kT=rel(lock.querySelector('.mark')), L=rel(lock);
+    var fs=parseFloat(getComputedStyle(word).fontSize);
+    var NS='http://www.w3.org/2000/svg', D1='M118 120 L160 120 L160 176 A72 72 0 1 1 160 64', D2='M264 192 L264 52 L212 140 L160 64';
+    stage=document.createElement('div'); stage.className='intro'; stage.setAttribute('aria-hidden','true'); stage.style.fontSize=fs+'px';
+    stage.innerHTML='<span class="w">GJE</span><span class="w">ndem</span><span class="w">MO</span><span class="w">en</span>'+
+      '<svg viewBox="26 30 256 180"><defs><linearGradient id="gji" gradientUnits="userSpaceOnUse" x1="42.75" y1="192" x2="264" y2="48"><stop offset="0" stop-color="#3B5BDB"/><stop offset="1" stop-color="#7C3AED"/></linearGradient></defs>'+
+      '<path fill="none" stroke="url(#gji)" stroke-linecap="round" stroke-linejoin="round" d="'+D1+'"/><path fill="none" stroke="url(#gji)" stroke-linecap="round" stroke-linejoin="round" d="'+D2+'"/>'+
+      '<circle r="9" fill="#5B3FD8"/><circle r="9" fill="#6D3FE0"/></svg>';
+    hero.appendChild(stage);
+    skip=document.createElement('button'); skip.type='button'; skip.className='skip'; skip.textContent=document.documentElement.classList.contains('no')?'Hopp over':'Skip';
+    hero.appendChild(skip);
+    var w=stage.querySelectorAll('.w'), G=w[0], N=w[1], M=w[2], E=w[3];
+    var svg=stage.querySelector('svg'), P=svg.querySelectorAll('path')[0], Q=svg.querySelectorAll('path')[1], c=svg.querySelectorAll('circle');
+    svg.setAttribute('width',kT.w); svg.setAttribute('height',kT.h); svg.style.left=kT.x+'px'; svg.style.top=kT.y+'px'; svg.style.transformOrigin='50% 50%';
+    var LP=P.getTotalLength(), LQ=Q.getTotalLength();
+    var wG=G.getBoundingClientRect().width, wN=N.getBoundingClientRect().width, wM=M.getBoundingClientRect().width, wE=E.getBoundingClientRect().width;
+    var cx=L.x+L.w/2, cy=gT.y, dy=fs*62/84, Xs=cx-Math.max(wG+wN,wM+wE)/2;
+    var place=function(el,x,y,o,blur,sc){el.style.transform='translate('+x.toFixed(2)+'px,'+y.toFixed(2)+'px)'+(sc?' scale('+sc+')':'');el.style.opacity=o;el.style.filter=blur>.05?'blur('+blur.toFixed(2)+'px)':'none'};
+    var t0=performance.now();
+    function frame(now){
+      var t=(now-t0)/1000;
+      var a1=k(t,.1,.8), a2=k(t,.5,1.2), a3=k(t,.8,1.5), a4=k(t,1.2,1.9), m=k(t,2.2,3.3), fadeOut=1-k(t,1.9,2.5), d=k(t,1.8,2.5);
+      place(G, Xs+(gT.x-Xs)*m, cy-dy+dy*m+(1-a1)*14, a1, (1-Math.min(1,a1*1.4))*6);
+      place(M, Xs+(mT.x-Xs)*m, cy+dy-dy*m+(1-a3)*14, a3, (1-Math.min(1,a3*1.4))*6);
+      // «ndem» and «en» dissolve (blur + lift) while GJE and MO start to slide
+      place(N, Xs+wG, cy-dy+(1-a2)*14-d*16, Math.min(a2,fadeOut), Math.max((1-Math.min(1,a2*1.4))*6,d*10), 1+d*.04);
+      place(E, Xs+wM, cy+dy+(1-a4)*14-d*16, Math.min(a4,fadeOut), Math.max((1-Math.min(1,a4*1.4))*6,d*10), 1+d*.04);
+      // two fountain pens from each end, meeting at the top of the G; the strokes swell as they go
+      var dr=k(t,2.8,4.3), on=(t>2.75&&t<4.4)?1:0, fadePen=1-lin((t-4.2)/.25), sw=String(10+18*Math.min(1,dr*1.5));
+      P.style.visibility=Q.style.visibility=(t<2.82?'hidden':'visible');
+      P.setAttribute('stroke-width',sw); Q.setAttribute('stroke-width',sw);
+      P.style.strokeDasharray=(LP*dr)+' '+(LP+1); Q.style.strokeDasharray=(LQ*dr)+' '+(LQ+1);
+      var p1=P.getPointAtLength(LP*dr), p2=Q.getPointAtLength(LQ*dr);
+      c[0].setAttribute('cx',p1.x); c[0].setAttribute('cy',p1.y); c[0].style.opacity=on*fadePen;
+      c[1].setAttribute('cx',p2.x); c[1].setAttribute('cy',p2.y); c[1].style.opacity=on*fadePen;
+      svg.style.transform='scale('+(0.97+0.03*dr)+')';
+      if(t>=4.5){ finish(); return; }
+      raf=requestAnimationFrame(frame);
+    }
+    raf=requestAnimationFrame(frame);
+  }
+})();
+(function(){
+  var h=document.documentElement, b=document.querySelectorAll('.lang button');
+  function set(l){h.classList.toggle('no',l==='no');h.lang=l==='no'?'nb':'en';b.forEach(function(x){x.setAttribute('aria-pressed',String(x.dataset.l===l))});try{localStorage.setItem('gjemo-lang',l)}catch(e){}}
+  b.forEach(function(x){x.addEventListener('click',function(){set(x.dataset.l)})});
+  try{var s=localStorage.getItem('gjemo-lang');if(s)set(s)}catch(e){}
+})();
+</script>
 </body>
 </html>
