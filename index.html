@@ -50,9 +50,12 @@ a:focus-visible{outline:2px solid var(--violet);outline-offset:3px;border-radius
 .sub{margin:0;font-size:17px;color:var(--muted);letter-spacing:.06em}
 .intro-on .lockup{visibility:hidden}
 .intro-on .tagline,.intro-on .sub{opacity:0}
-.intro-done .tagline,.intro-done .sub{animation:rise .45s ease both}
-.intro-done .sub{animation-delay:.08s}
-@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* Tagline fades in softly while the pens are finishing (no jump when the intro ends) */
+.tagline,.sub{will-change:opacity,transform}
+.intro-tag .tagline,.intro-tag .sub,.intro-done .tagline,.intro-done .sub{animation:rise 1.1s cubic-bezier(.22,.8,.24,1) both}
+.intro-tag .sub,.intro-done .sub{animation-delay:.2s}
+.intro-tag.intro-done .tagline,.intro-tag.intro-done .sub{animation-play-state:running}
+@keyframes rise{from{opacity:0;transform:translate3d(0,6px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
 .intro{position:absolute;inset:0;pointer-events:none;overflow:hidden}
 .intro .w{position:absolute;left:0;top:0;line-height:1;letter-spacing:.2em;white-space:nowrap;will-change:transform,opacity,filter;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0}
 .intro svg{position:absolute;overflow:visible}
@@ -251,6 +254,7 @@ html.no [lang="no"]{display:revert}
       c[0].setAttribute('cx',p1.x); c[0].setAttribute('cy',p1.y); c[0].style.opacity=on*fadePen;
       c[1].setAttribute('cx',p2.x); c[1].setAttribute('cy',p2.y); c[1].style.opacity=on*fadePen;
       svg.style.transform='scale('+(0.97+0.03*dr)+')';
+      if(t>=end-.5 && !hero.classList.contains('intro-tag')) hero.classList.add('intro-tag'); // start the tagline before the pens finish
       if(t>=end){ finish(); return; }
       raf=requestAnimationFrame(frame);
     }
