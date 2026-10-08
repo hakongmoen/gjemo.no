@@ -44,7 +44,10 @@ a:focus-visible{outline:2px solid var(--violet);outline-offset:3px;border-radius
 .hero{position:relative;padding:150px 0 120px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:26px}
 .lockup{display:flex;align-items:center;gap:clamp(18px,3vw,34px);margin:0;font-weight:500}
 .lockup .word{font-size:clamp(44px,8.4vw,88px);line-height:1;letter-spacing:.2em;margin-right:-.2em;white-space:nowrap}
-.lockup .word span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* One continuous gradient over the whole word (as in the intro), not one per span */
+.lockup .word{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lockup .word span{color:transparent}
+.intro{transition:opacity .35s ease}
 .mark{display:block;width:clamp(100px,19vw,200px);height:auto;overflow:visible}
 .tagline{margin:0;font-size:clamp(22px,3vw,30px);color:var(--text)}
 .sub{margin:0;font-size:17px;color:var(--muted);letter-spacing:.06em}
@@ -198,7 +201,8 @@ html.no [lang="no"]{display:revert}
     // Show the real logo first, then remove the intro layer on the next frame: no blank or doubled frame.
     hero.classList.remove('intro-on'); hero.classList.add('intro-done');
     if(skip) skip.remove();
-    var st=stage; if(st) requestAnimationFrame(function(){ requestAnimationFrame(function(){ st.remove(); }); });
+    // Cross-fade: the intro layer fades out over the real logo (0.35 s), so no colour or pixel jump shows.
+    var st=stage; if(st){ requestAnimationFrame(function(){ st.style.opacity='0'; setTimeout(function(){ st.remove(); },400); }); }
     removeEventListener('pointerdown',finish); removeEventListener('keydown',finish);
   }
   addEventListener('pointerdown',finish); addEventListener('keydown',finish);
