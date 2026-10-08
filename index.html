@@ -180,7 +180,7 @@ html.no [lang="no"]{display:revert}
 </footer>
 
 <script>
-/* GJEMO intro, after C:\Gjemo\logo\endelig\intro-forhand.html (#v=6&c=4). Plays once, tap or key skips,
+/* GJEMO intro, after C:\Gjemo\logo\endelig\intro-forhand.html (#v=6&c=4). Long version on the first visit, short on later visits; tap or key skips,
    prefers-reduced-motion or no fonts API shows the finished logo directly. No sound, no external files. */
 (function(){
   var hero=document.querySelector('.hero'), lock=hero.querySelector('.lockup');
@@ -206,34 +206,52 @@ html.no [lang="no"]{display:revert}
     var fs=parseFloat(getComputedStyle(word).fontSize);
     var NS='http://www.w3.org/2000/svg', D1='M118 120 L160 120 L160 176 A72 72 0 1 1 160 64', D2='M264 192 L264 52 L212 140 L160 64';
     stage=document.createElement('div'); stage.className='intro'; stage.setAttribute('aria-hidden','true'); stage.style.fontSize=fs+'px';
-    stage.innerHTML='<span class="w">GJEMO</span>'+
+    // First visit: the long intro (GJEndem / MOen -> GJE + MO -> pens). Later visits, or no storage: the short one.
+    var long=false;
+    try{ if(!localStorage.getItem('gjemo-intro')){ localStorage.setItem('gjemo-intro','1'); long=localStorage.getItem('gjemo-intro')==='1'; } }catch(e){ long=false; }
+    stage.innerHTML=(long?'<span class="w">GJE</span><span class="w">ndem</span><span class="w">MO</span><span class="w">en</span>':'<span class="w">GJEMO</span>')+
       '<svg viewBox="26 30 256 180"><defs><linearGradient id="gji" gradientUnits="userSpaceOnUse" x1="42.75" y1="192" x2="264" y2="48"><stop offset="0" stop-color="#3B5BDB"/><stop offset="1" stop-color="#7C3AED"/></linearGradient></defs>'+
       '<path fill="none" stroke="url(#gji)" stroke-linecap="round" stroke-linejoin="round" d="'+D1+'"/><path fill="none" stroke="url(#gji)" stroke-linecap="round" stroke-linejoin="round" d="'+D2+'"/>'+
       '<circle r="9" fill="#5B3FD8"/><circle r="9" fill="#6D3FE0"/></svg>';
     hero.appendChild(stage);
     skip=document.createElement('button'); skip.type='button'; skip.className='skip'; skip.textContent=document.documentElement.classList.contains('no')?'Hopp over':'Skip';
     hero.appendChild(skip);
-    var G=stage.querySelector('.w');
+    var w=stage.querySelectorAll('.w'), G=w[0], N=w[1], M=w[2], E=w[3];
     var svg=stage.querySelector('svg'), P=svg.querySelectorAll('path')[0], Q=svg.querySelectorAll('path')[1], c=svg.querySelectorAll('circle');
     svg.setAttribute('width',kT.w); svg.setAttribute('height',kT.h); svg.style.left=kT.x+'px'; svg.style.top=kT.y+'px'; svg.style.transformOrigin='50% 50%';
     var LP=P.getTotalLength(), LQ=Q.getTotalLength();
     var place=function(el,x,y,o,blur,sc){el.style.transform='translate('+x.toFixed(2)+'px,'+y.toFixed(2)+'px)'+(sc?' scale('+sc+')':'');el.style.opacity=o;el.style.filter=blur>.05?'blur('+blur.toFixed(2)+'px)':'none'};
+    if(long){
+      var wG=G.getBoundingClientRect().width, wN=N.getBoundingClientRect().width, wM=M.getBoundingClientRect().width, wE=E.getBoundingClientRect().width;
+      var cx=L.x+L.w/2, cy=gT.y, dy=fs*62/84, Xs=cx-Math.max(wG+wN,wM+wE)/2;
+    }
+    // Pen timing: long 2.8-4.3 s (ends 4.5), short 0.7-2.2 s (ends 2.3)
+    var p0=long?2.8:.7, p1t=long?4.3:2.2, end=long?4.5:2.3;
     var t0=performance.now();
     function frame(now){
       var t=(now-t0)/1000;
-      // GJEMO slides into place (0.2-1.0 s)
-      var a=k(t,.2,1);
-      place(G, gT.x+(1-a)*fs*.6, gT.y, a, (1-Math.min(1,a*1.4))*6);
-      // two fountain pens from each end, meeting at the top of the G (0.7-2.2 s); the strokes swell as they go
-      var dr=k(t,.7,2.2), on=(t>.65&&t<2.3)?1:0, fadePen=1-lin((t-2.1)/.25), sw=String(10+18*Math.min(1,dr*1.5));
-      P.style.visibility=Q.style.visibility=(t<.72?'hidden':'visible');
+      if(long){
+        var a1=k(t,.1,.8), a2=k(t,.5,1.2), a3=k(t,.8,1.5), a4=k(t,1.2,1.9), m=k(t,2.2,3.3), fadeOut=1-k(t,1.9,2.5), d=k(t,1.8,2.5);
+        place(G, Xs+(gT.x-Xs)*m, cy-dy+dy*m+(1-a1)*14, a1, (1-Math.min(1,a1*1.4))*6);
+        place(M, Xs+(mT.x-Xs)*m, cy+dy-dy*m+(1-a3)*14, a3, (1-Math.min(1,a3*1.4))*6);
+        // «ndem» and «en» dissolve (blur + lift) while GJE and MO start to slide
+        place(N, Xs+wG, cy-dy+(1-a2)*14-d*16, Math.min(a2,fadeOut), Math.max((1-Math.min(1,a2*1.4))*6,d*10), 1+d*.04);
+        place(E, Xs+wM, cy+dy+(1-a4)*14-d*16, Math.min(a4,fadeOut), Math.max((1-Math.min(1,a4*1.4))*6,d*10), 1+d*.04);
+      } else {
+        // GJEMO slides into place (0.2-1.0 s)
+        var a=k(t,.2,1);
+        place(G, gT.x+(1-a)*fs*.6, gT.y, a, (1-Math.min(1,a*1.4))*6);
+      }
+      // two fountain pens from each end, meeting at the top of the G; the strokes swell as they go
+      var dr=k(t,p0,p1t), on=(t>p0-.05&&t<end)?1:0, fadePen=1-lin((t-(p1t-.1))/.25), sw=String(10+18*Math.min(1,dr*1.5));
+      P.style.visibility=Q.style.visibility=(t<p0+.02?'hidden':'visible');
       P.setAttribute('stroke-width',sw); Q.setAttribute('stroke-width',sw);
       P.style.strokeDasharray=(LP*dr)+' '+(LP+1); Q.style.strokeDasharray=(LQ*dr)+' '+(LQ+1);
       var p1=P.getPointAtLength(LP*dr), p2=Q.getPointAtLength(LQ*dr);
       c[0].setAttribute('cx',p1.x); c[0].setAttribute('cy',p1.y); c[0].style.opacity=on*fadePen;
       c[1].setAttribute('cx',p2.x); c[1].setAttribute('cy',p2.y); c[1].style.opacity=on*fadePen;
       svg.style.transform='scale('+(0.97+0.03*dr)+')';
-      if(t>=2.3){ finish(); return; }
+      if(t>=end){ finish(); return; }
       raf=requestAnimationFrame(frame);
     }
     raf=requestAnimationFrame(frame);
